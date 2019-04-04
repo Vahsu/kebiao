@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DisplayCourseActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/line_top"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/line_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/top_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/top_1"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/top_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/top_2"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/top_0" />
+
+            <TextView
+                android:id="@+id/top_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/top_3"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/top_1" />
+
+            <TextView
+                android:id="@+id/top_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/top_4"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/top_2" />
+
+            <TextView
+                android:id="@+id/top_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/top_5"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/top_3" />
+
+            <TextView
+                android:id="@+id/top_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/top_6"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/top_4" />
+
+            <TextView
+                android:id="@+id/top_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/top_7"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/top_5" />
+
+            <TextView
+                android:id="@+id/top_7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/top_6" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/line_2"
+            android:layout_width="match_parent"
+            android:layout_height="600dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line_top">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/line_left"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toStartOf="@+id/id_recycler_view"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_weight="12">
+
+                <TextView
+                    android:id="@+id/left_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:text="1-2"
+                    app:layout_constraintBottom_toTopOf="@id/left_2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_weight="2" />
+
+                <TextView
+                    android:id="@+id/left_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:text="3-4"
+                    app:layout_constraintBottom_toTopOf="@id/left_3"
+                    app:layout_constraintTop_toBottomOf="@id/left_1"
+                    app:layout_constraintVertical_weight="2" />
+
+                <TextView
+                    android:id="@+id/left_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:text="中午"
+                    app:layout_constraintBottom_toTopOf="@id/left_4"
+                    app:layout_constraintTop_toBottomOf="@id/left_2"
+                    app:layout_constraintVertical_weight="1" />
+
+                <TextView
+                    android:id="@+id/left_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:text="5-6"
+                    app:layout_constraintBottom_toTopOf="@id/left_5"
+                    app:layout_constraintTop_toBottomOf="@id/left_3"
+                    app:layout_constraintVertical_weight="2" />
+
+                <TextView
+                    android:id="@+id/left_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:text="7-8"
+                    app:layout_constraintBottom_toTopOf="@id/left_6"
+                    app:layout_constraintTop_toBottomOf="@id/left_4"
+                    app:layout_constraintVertical_weight="2" />
+
+                <TextView
+                    android:id="@+id/left_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:text="9-10"
+                    app:layout_constraintBottom_toTopOf="@id/left_7"
+                    app:layout_constraintTop_toBottomOf="@id/left_5"
+                    app:layout_constraintVertical_weight="2" />
+
+                <TextView
+                    android:id="@+id/left_7"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:text="11"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/left_6"
+                    app:layout_constraintVertical_weight="1" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/id_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/line_left"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="7"
+                app:layout_constraintStart_toEndOf="@+id/line_left"
+                app:layout_constraintTop_toTopOf="@id/line_left"
+                app:layout_constraintVertical_weight="12" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
