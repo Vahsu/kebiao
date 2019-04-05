@@ -1,1 +1,1 @@
-A Class Schedule app for CDUT
+A class schedule app for CDUT
