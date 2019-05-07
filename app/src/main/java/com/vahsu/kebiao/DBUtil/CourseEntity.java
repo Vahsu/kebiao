@@ -9,7 +9,7 @@ public class CourseEntity {
     @PrimaryKey
     private int num;
 
-    private int courseLength;
+    private int length;
     private String courseName;
     private String classroom;
     private String type;
@@ -19,11 +19,11 @@ public class CourseEntity {
     private String date;
 
 
-    public CourseEntity(int num, int courseLength, String courseName, String classroom,
+    public CourseEntity(int num, int length, String courseName, String classroom,
                         String type, String lecturer, int week, int day, String date) {
 
         this.num = num;
-        this.courseLength = courseLength;
+        this.length = length;
         this.courseName = courseName;
         this.classroom = classroom;
         this.type = type;
@@ -35,12 +35,12 @@ public class CourseEntity {
     }
 
 
-    public int getCourseLength() {
-        return courseLength;
+    public int getLength() {
+        return length;
     }
 
-    public void setCourseLength(int courseLength) {
-        this.courseLength = courseLength;
+    public void setLength(int length) {
+        this.length = length;
     }
 
     public String getCourseName() {

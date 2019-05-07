@@ -3,8 +3,8 @@ package com.vahsu.kebiao.DBUtil;
 import androidx.room.ColumnInfo;
 
 public class CourseLNR {
-    @ColumnInfo(name = "courseLength")
-    private int courseLength;
+    @ColumnInfo(name = "length")
+    private int length;
 
     @ColumnInfo(name = "courseName")
     private String courseName;
@@ -12,8 +12,8 @@ public class CourseLNR {
     @ColumnInfo(name = "classroom")
     private String classroom;
 
-    public int getCourseLength() {
-        return courseLength;
+    public int getLength() {
+        return length;
     }
 
     public String getCourseName() {
@@ -24,8 +24,8 @@ public class CourseLNR {
         return classroom;
     }
 
-    public void setCourseLength(int courseLength) {
-        this.courseLength = courseLength;
+    public void setLength(int length) {
+        this.length = length;
     }
 
     public void setCourseName(String courseName) {

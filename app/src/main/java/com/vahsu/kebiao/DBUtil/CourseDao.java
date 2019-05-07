@@ -12,7 +12,7 @@ public interface CourseDao {
 
 
     //通过周数查找课程信息
-    @Query("SELECT courseLength, courseName, classroom FROM course WHERE week = :week ORDER BY num")
+    @Query("SELECT length, courseName, classroom FROM course WHERE week = :week ORDER BY num")
     List<CourseLNR> getCourseByWeek(int week);
 
     //通过周数查找一周的日期
