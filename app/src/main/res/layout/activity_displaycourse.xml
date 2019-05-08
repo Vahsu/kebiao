@@ -28,7 +28,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:background="@null"
-                android:dropDownVerticalOffset="100dp"
+                android:dropDownVerticalOffset="50dp"
                 app:layout_constraintEnd_toStartOf="@+id/top_1"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent" />
