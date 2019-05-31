@@ -99,8 +99,6 @@ public class ParseHtml {
         Pattern pattern2 = Pattern.compile(regex2);
         for (Element td : tdList) {
             String tdText = td.text();
-            String text = "(射1)射频通信电路 (ID[L1591]学分[3.5] 105147-L01([理] 时[48] 师[郭亚莎] 室[6A105,6A307,6A207])2016130701-2\n" +
-                    "105147-R02([实] 时[8] 师[郭亚莎] 室[6B603])2016130702";
             Matcher matcher1 = pattern1.matcher(tdText);
             if (matcher1.find()){
                 courseName = matcher1.group(2);

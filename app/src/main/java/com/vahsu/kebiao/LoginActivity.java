@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //登录异步任务
-    private class LoginTask extends AsyncTask<GetHtml, Integer, GetHtml>{
+    private class LoginTask extends AsyncTask<Void, Integer, GetHtml>{
 
         @Override
         protected void onPreExecute(){
@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected GetHtml doInBackground(GetHtml... strings) {
+        protected GetHtml doInBackground(Void... strings) {
             GetHtml getHtml = new GetHtml(studentIDText, passwordText);
             if(getHtml.loginIsSuccessful()) {
                 List<CourseEntity> courseEntityList = new ParseHtml(getHtml.getCourseHtml()).getCourseList();

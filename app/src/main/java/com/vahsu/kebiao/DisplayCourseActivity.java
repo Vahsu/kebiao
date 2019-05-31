@@ -76,6 +76,31 @@ public class DisplayCourseActivity extends AppCompatActivity {
         top[5] = findViewById(R.id.top_6);
         top[6] = findViewById(R.id.top_7);
 
+        RecyclerView myRecyclerView = (RecyclerView) findViewById(R.id.id_recycler_view);
+        //设置网格布局，行数12
+        GridLayoutManager layoutManager = new GridLayoutManager
+                (DisplayCourseActivity.this, 12, GridLayoutManager.HORIZONTAL, false) {
+            //禁止myRecyclerView滚动
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+
+        };
+
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return courseLNRList.get(position).getLength();
+
+            }
+        });
+        myRecyclerView.setLayoutManager(layoutManager);
+        myRecyclerView.setHasFixedSize(true);
+        //设置适配器
+        mAdapter = new CourseAdapter(courseLNRList);
+        myRecyclerView.setAdapter(mAdapter);
+
         new showCourseList().execute();
     }
 
@@ -101,7 +126,8 @@ public class DisplayCourseActivity extends AppCompatActivity {
             dates = AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getDatesByWeek(week);
 
             //课表信息List
-            courseLNRList = AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getCourseByWeek(week);
+            courseLNRList.clear();
+            courseLNRList.addAll(AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getCourseByWeek(week));
             return "0";
         }
 
@@ -115,33 +141,7 @@ public class DisplayCourseActivity extends AppCompatActivity {
                 String text = dates.get(i) + "\n" + days[i];
                 top[i].setText(text);
             }
-
-            RecyclerView myRecyclerView = (RecyclerView) findViewById(R.id.id_recycler_view);
-            //设置网格布局，行数12
-            GridLayoutManager layoutManager = new GridLayoutManager
-                    (DisplayCourseActivity.this, 12, GridLayoutManager.HORIZONTAL, false) {
-                //禁止myRecyclerView滚动
-                @Override
-                public boolean canScrollHorizontally() {
-                    return false;
-                }
-
-            };
-
-            layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    return courseLNRList.get(position).getLength();
-
-                }
-            });
-            myRecyclerView.setLayoutManager(layoutManager);
-            myRecyclerView.setHasFixedSize(true);
-
-            //设置适配器
-            mAdapter = new CourseAdapter(DisplayCourseActivity.this.getApplicationContext(), courseLNRList);
-            myRecyclerView.setAdapter(mAdapter);
-
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

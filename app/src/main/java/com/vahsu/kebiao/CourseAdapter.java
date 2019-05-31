@@ -27,7 +27,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
         }
     }
 
-    CourseAdapter(Context context, List<CourseLNR> courseLNRList) {
+    CourseAdapter(List<CourseLNR> courseLNRList) {
 
         mCourseLNRList = courseLNRList;
 
