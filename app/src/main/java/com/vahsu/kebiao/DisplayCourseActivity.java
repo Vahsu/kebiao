@@ -127,12 +127,22 @@ public class DisplayCourseActivity extends AppCompatActivity {
 
             //课表信息List
             courseLNRList.clear();
+            Log.d("size after clearing", String.valueOf(courseLNRList.size()));
             courseLNRList.addAll(AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getCourseByWeek(week));
             return "0";
         }
 
         @Override
         protected void onPostExecute(String result) {
+times++;
+            Log.d("time",String.valueOf(times));
+            Log.d("list.size",String.valueOf(courseLNRList.size()));
+            for (CourseLNR l : courseLNRList){
+                if (null != l.getCourseName()) {
+                    Log.d("list", l.getCourseName());
+                }
+                else Log.d("list", " ");
+            }
 
             times++;
             top_0.setSelection(week - 1, false);

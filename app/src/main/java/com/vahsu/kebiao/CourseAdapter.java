@@ -1,6 +1,7 @@
 package com.vahsu.kebiao;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,9 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             }
             holder.courseView.setText(text);
             holder.courseView.setBackgroundColor(0xFF3CAFFF);
+        } else{
+            holder.courseView.setText(null);
+            holder.courseView.setBackground(null);
         }
 
     }
