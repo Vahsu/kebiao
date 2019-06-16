@@ -1,21 +1,28 @@
 package com.vahsu.kebiao;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.vahsu.kebiao.DBUtil.CourseLNR;
+import com.vahsu.kebiao.DBUtil.CourseLNRTL;
 
 import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder> {
-    private List<CourseLNR> mCourseLNRList;
+    private List<CourseLNRTL> mCourseLNRTLList;
     private int parentWidth;
+
+    public interface OnItemClickListener{
+        void onClick(View v,int postion);
+    }
+    private OnItemClickListener onItemClickListener;
+    public void setOnClickListener(OnItemClickListener listener){
+        onItemClickListener = listener;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView courseView;
@@ -28,9 +35,9 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
         }
     }
 
-    CourseAdapter(List<CourseLNR> courseLNRList) {
+    CourseAdapter(List<CourseLNRTL> courseLNRTLList) {
 
-        mCourseLNRList = courseLNRList;
+        mCourseLNRTLList = courseLNRTLList;
 
     }
 
@@ -47,9 +54,9 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
 
     // 替换视图的内容（由布局管理器调用）
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        CourseLNR courseEntity = mCourseLNRList.get(position);
+        CourseLNRTL courseEntity = mCourseLNRTLList.get(position);
         if(null != courseEntity.getCourseName()&&!"".equals(courseEntity.getCourseName())){
             String text = courseEntity.getCourseName();
             if (null != courseEntity.getClassroom()&&!"".equals(courseEntity.getClassroom())){
@@ -57,9 +64,16 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             }
             holder.courseView.setText(text);
             holder.courseView.setBackgroundColor(0xFF3CAFFF);
+            holder.courseView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onClick(v,position);
+                }
+            });
         } else{
             holder.courseView.setText(null);
             holder.courseView.setBackground(null);
+            holder.courseView.setOnClickListener(null);
         }
 
     }
@@ -67,6 +81,6 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
     // 返回数据集的大小（由布局管理器调用）
     @Override
     public int getItemCount() {
-        return mCourseLNRList.size();
+        return mCourseLNRTLList.size();
     }
 }

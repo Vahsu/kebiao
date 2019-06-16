@@ -11,12 +11,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.vahsu.kebiao.DBUtil.AppDatabase;
-import com.vahsu.kebiao.DBUtil.CourseLNR;
+import com.vahsu.kebiao.DBUtil.CourseLNRTL;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,8 +26,8 @@ public class DisplayCourseActivity extends AppCompatActivity {
 
     private int times = 0;
     private boolean isFirst = true;
-    List<CourseLNR> courseLNRList = new ArrayList<>();
-    private RecyclerView.Adapter mAdapter;
+    List<CourseLNRTL> courseLNRTLList = new ArrayList<>();
+    private CourseAdapter mAdapter;
     List<String> dates;
     private TextView[] top;
     private Spinner top_0;
@@ -55,10 +56,8 @@ public class DisplayCourseActivity extends AppCompatActivity {
                 if (isFirst) {
                     isFirst = false;
                 } else {
-
                     new showCourseList(position + 1).execute();
                 }
-
             }
 
             @Override
@@ -91,14 +90,36 @@ public class DisplayCourseActivity extends AppCompatActivity {
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return courseLNRList.get(position).getLength();
+                return courseLNRTLList.get(position).getLength();
 
             }
         });
         myRecyclerView.setLayoutManager(layoutManager);
         myRecyclerView.setHasFixedSize(true);
         //设置适配器
-        mAdapter = new CourseAdapter(courseLNRList);
+        mAdapter = new CourseAdapter(courseLNRTLList);
+        mAdapter.setOnClickListener(new CourseAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                CourseLNRTL courseLNRTL = courseLNRTLList.get(position);
+                String title = courseLNRTL.getCourseName();
+                if (null != courseLNRTL.getType()){
+                    title += " [" + courseLNRTL.getType() + "]";
+                }
+                String message = "";
+                if (null != courseLNRTL.getClassroom()){
+                    message =  courseLNRTL.getClassroom();
+                }
+                if (null != courseLNRTL.getLecturer()){
+                    message += "\n" + courseLNRTL.getLecturer();
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle(title)
+                        .setMessage(message)
+                        .setPositiveButton("确定",null)
+                        .create().show();
+            }
+        });
         myRecyclerView.setAdapter(mAdapter);
 
         new showCourseList().execute();
@@ -126,25 +147,13 @@ public class DisplayCourseActivity extends AppCompatActivity {
             dates = AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getDatesByWeek(week);
 
             //课表信息List
-            courseLNRList.clear();
-            Log.d("size after clearing", String.valueOf(courseLNRList.size()));
-            courseLNRList.addAll(AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getCourseByWeek(week));
+            courseLNRTLList.clear();
+            courseLNRTLList.addAll(AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getCourseByWeek(week));
             return "0";
         }
 
         @Override
         protected void onPostExecute(String result) {
-times++;
-            Log.d("time",String.valueOf(times));
-            Log.d("list.size",String.valueOf(courseLNRList.size()));
-            for (CourseLNR l : courseLNRList){
-                if (null != l.getCourseName()) {
-                    Log.d("list", l.getCourseName());
-                }
-                else Log.d("list", " ");
-            }
-
-            times++;
             top_0.setSelection(week - 1, false);
             String[] days = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
             for (int i = 0; i < 7; i++) {
