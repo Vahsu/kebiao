@@ -2,7 +2,7 @@ package com.vahsu.kebiao.DBUtil;
 
 import androidx.room.ColumnInfo;
 
-public class CourseLNR {
+public class CourseLNRTL {
     @ColumnInfo(name = "length")
     private int length;
 
@@ -11,6 +11,12 @@ public class CourseLNR {
 
     @ColumnInfo(name = "classroom")
     private String classroom;
+
+    @ColumnInfo(name = "type")
+    private String type;
+
+    @ColumnInfo(name = "lecturer")
+    private String lecturer;
 
     public int getLength() {
         return length;
@@ -34,5 +40,21 @@ public class CourseLNR {
 
     public void setClassroom(String classroom) {
         this.classroom = classroom;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getLecturer() {
+        return lecturer;
+    }
+
+    public void setLecturer(String lecturer) {
+        this.lecturer = lecturer;
     }
 }

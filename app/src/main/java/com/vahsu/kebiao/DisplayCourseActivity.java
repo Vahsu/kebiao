@@ -1,9 +1,14 @@
 package com.vahsu.kebiao;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,23 +16,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.vahsu.kebiao.DBUtil.AppDatabase;
-import com.vahsu.kebiao.DBUtil.CourseLNR;
+import com.vahsu.kebiao.DBUtil.CourseLNRTL;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class DisplayCourseActivity extends AppCompatActivity {
 
-    private int times = 0;
     private boolean isFirst = true;
-    List<CourseLNR> courseLNRList = new ArrayList<>();
-    private RecyclerView.Adapter mAdapter;
+    List<CourseLNRTL> courseLNRTLList = new ArrayList<>();
+    private CourseAdapter mAdapter;
     List<String> dates;
+    String lastDate;
+    int totalWeek;
     private TextView[] top;
     private Spinner top_0;
 
@@ -41,7 +49,8 @@ public class DisplayCourseActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         top_0 = (Spinner) findViewById(R.id.top_0);
         preferences = getSharedPreferences("data", MODE_PRIVATE);
-        int totalWeek = preferences.getInt("totalWeek", 0);
+        totalWeek = preferences.getInt("totalWeek", 0);
+        lastDate = preferences.getString("lastDate","0-0");
         String[] week = new String[totalWeek];
         for (int i = 0; i < week.length; i++) {
             week[i] = String.valueOf(i + 1) + "周";
@@ -55,10 +64,8 @@ public class DisplayCourseActivity extends AppCompatActivity {
                 if (isFirst) {
                     isFirst = false;
                 } else {
-
                     new showCourseList(position + 1).execute();
                 }
-
             }
 
             @Override
@@ -91,14 +98,36 @@ public class DisplayCourseActivity extends AppCompatActivity {
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return courseLNRList.get(position).getLength();
+                return courseLNRTLList.get(position).getLength();
 
             }
         });
         myRecyclerView.setLayoutManager(layoutManager);
         myRecyclerView.setHasFixedSize(true);
         //设置适配器
-        mAdapter = new CourseAdapter(courseLNRList);
+        mAdapter = new CourseAdapter(courseLNRTLList);
+        mAdapter.setOnClickListener(new CourseAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                CourseLNRTL courseLNRTL = courseLNRTLList.get(position);
+                String title = courseLNRTL.getCourseName();
+                if (null != courseLNRTL.getType()){
+                    title += " [" + courseLNRTL.getType() + "]";
+                }
+                String message = "";
+                if (null != courseLNRTL.getClassroom()){
+                    message =  courseLNRTL.getClassroom();
+                }
+                if (null != courseLNRTL.getLecturer()){
+                    message += "\n" + courseLNRTL.getLecturer();
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle(title)
+                        .setMessage(message)
+                        .setPositiveButton("确定",null)
+                        .create().show();
+            }
+        });
         myRecyclerView.setAdapter(mAdapter);
 
         new showCourseList().execute();
@@ -121,30 +150,25 @@ public class DisplayCourseActivity extends AppCompatActivity {
                 int month = calendar.get(Calendar.MONTH) + 1;
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
                 String today = String.valueOf(month) + "-" + String.valueOf(day);
-                week = AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getWeekByDate(today);
+                String[] lastTemp = lastDate.split("-",2);
+                int lastMonth = Integer.parseInt(lastTemp[0]);
+                int lastDay = Integer.parseInt(lastTemp[1]);
+                if ((month * 100 + day) > (lastMonth * 100 + lastDay)){
+                    week = totalWeek;
+                } else {
+                    week = AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getWeekByDate(today);
+                }
             }
             dates = AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getDatesByWeek(week);
 
             //课表信息List
-            courseLNRList.clear();
-            Log.d("size after clearing", String.valueOf(courseLNRList.size()));
-            courseLNRList.addAll(AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getCourseByWeek(week));
+            courseLNRTLList.clear();
+            courseLNRTLList.addAll(AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getCourseByWeek(week));
             return "0";
         }
 
         @Override
         protected void onPostExecute(String result) {
-times++;
-            Log.d("time",String.valueOf(times));
-            Log.d("list.size",String.valueOf(courseLNRList.size()));
-            for (CourseLNR l : courseLNRList){
-                if (null != l.getCourseName()) {
-                    Log.d("list", l.getCourseName());
-                }
-                else Log.d("list", " ");
-            }
-
-            times++;
             top_0.setSelection(week - 1, false);
             String[] days = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
             for (int i = 0; i < 7; i++) {
@@ -153,6 +177,33 @@ times++;
             }
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.display_course_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.switchUser:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("确定要切换账号？")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(DisplayCourseActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }).setNegativeButton("取消", null)
+                        .create().show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

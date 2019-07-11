@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                 AppDatabase.getInstance(LoginActivity.this.getApplicationContext()).CourseDao().addAll(courseEntityList);
 
                 editor.putInt("totalWeek",courseEntityList.get(courseEntityList.size()-1).getWeek());
+                editor.putString("lastDate",courseEntityList.get(courseEntityList.size()-1).getDate());
                 editor.putString("password",passwordText);
                 editor.putBoolean("hasCourseData", true);
                 editor.apply();
