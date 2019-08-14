@@ -1,22 +1,35 @@
 package com.vahsu.kebiao;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.vahsu.kebiao.DBUtil.CourseLNRTL;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
+import java.util.Map;
+import java.util.Random;
 
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder> {
     private List<CourseLNRTL> mCourseLNRTLList;
-    private int parentWidth;
+    private List<Integer> colorList;
+    private Map<String, Integer> colorMap = new HashMap<>();
+    private int count = -1;
+    //重置可用颜色，与相邻位置颜色不重复
+    public void resetColor(){
+        count = -1;
+        colorMap.clear();
+    }
 
     public interface OnItemClickListener{
-        void onClick(View v,int postion);
+        void onClick(View v,int position);
     }
     private OnItemClickListener onItemClickListener;
     public void setOnClickListener(OnItemClickListener listener){
@@ -27,7 +40,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
 
         TextView courseView;
 
-        ViewHolder(View view) {
+        ViewHolder(View view, int parentWidth) {
             super(view);
             courseView = (TextView)view.findViewById(R.id.course);
             courseView.setWidth(parentWidth/7);
@@ -44,11 +57,18 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
     // 创建新视图（由布局管理器调用）
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (colorList == null){
+            colorList = new LinkedList<>();
+            int[] colors = parent.getContext().getResources().getIntArray(R.array.course_background_color);
+            for (int colorTemp : colors) {
+                colorList.add(colorTemp);
+            }
+        }
         // 创建新视图
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.course_item, parent, false);
-        parentWidth = parent.getMeasuredWidth();
-        ViewHolder holder = new ViewHolder(view);
+        int parentWidth = parent.getMeasuredWidth();
+        ViewHolder holder = new ViewHolder(view, parentWidth);
         return holder;
     }
 
@@ -62,8 +82,27 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             if (null != courseEntity.getClassroom()&&!"".equals(courseEntity.getClassroom())){
                 text = text + "\n" + courseEntity.getClassroom();
             }
+            if (count < 1){
+                count = count == -1 ? colorList.size() : colorList.size() / 2;
+            }
+            int color;
+            //如果颜色映射包含text
+            if (colorMap.containsKey(text)){
+                color = colorMap.get(text);
+            } else {
+                Random r = new Random();
+                int random = r.nextInt(count);
+                count--;
+                color = colorList.get(random);
+                colorList.remove(random);
+                colorList.add(color);
+                colorMap.put(text, color);
+            }
+
+            Drawable shape = holder.courseView.getContext().getDrawable(R.drawable.course_background);
+            shape.setColorFilter(color, PorterDuff.Mode.SRC);
             holder.courseView.setText(text);
-            holder.courseView.setBackgroundColor(0xFF3CAFFF);
+            holder.courseView.setBackground(shape);
             holder.courseView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

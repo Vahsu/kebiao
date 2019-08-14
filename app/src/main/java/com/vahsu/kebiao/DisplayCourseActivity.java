@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,18 +14,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.vahsu.kebiao.DBUtil.AppDatabase;
 import com.vahsu.kebiao.DBUtil.CourseLNRTL;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class DisplayCourseActivity extends AppCompatActivity {
 
@@ -175,6 +173,7 @@ public class DisplayCourseActivity extends AppCompatActivity {
                 String text = dates.get(i) + "\n" + days[i];
                 top[i].setText(text);
             }
+            mAdapter.resetColor();
             mAdapter.notifyDataSetChanged();
         }
     }

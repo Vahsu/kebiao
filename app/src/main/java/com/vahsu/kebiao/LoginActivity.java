@@ -1,6 +1,5 @@
 package com.vahsu.kebiao;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -9,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.vahsu.kebiao.DBUtil.AppDatabase;
 import com.vahsu.kebiao.DBUtil.CourseEntity;
