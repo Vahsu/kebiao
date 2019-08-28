@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.vahsu.kebiao.DBUtil.CourseLNRTL;
@@ -22,7 +23,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
     private List<Integer> colorList;
     private Map<String, Integer> colorMap = new HashMap<>();
     private int count = -1;
-    //重置可用颜色，与相邻位置颜色不重复
+    //重置可用颜色，相邻位置颜色不重复
     public void resetColor(){
         count = -1;
         colorMap.clear();
@@ -55,8 +56,9 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
     }
 
     // 创建新视图（由布局管理器调用）
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (colorList == null){
             colorList = new LinkedList<>();
             int[] colors = parent.getContext().getResources().getIntArray(R.array.course_background_color);
@@ -68,28 +70,25 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.course_item, parent, false);
         int parentWidth = parent.getMeasuredWidth();
-        ViewHolder holder = new ViewHolder(view, parentWidth);
-        return holder;
+        return new ViewHolder(view, parentWidth);
     }
 
     // 替换视图的内容（由布局管理器调用）
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
         CourseLNRTL courseEntity = mCourseLNRTLList.get(position);
-        if(null != courseEntity.getCourseName()&&!"".equals(courseEntity.getCourseName())){
+        if(null != courseEntity.getCourseName() && !"".equals(courseEntity.getCourseName())){
             String text = courseEntity.getCourseName();
-            if (null != courseEntity.getClassroom()&&!"".equals(courseEntity.getClassroom())){
+            if (null != courseEntity.getClassroom() && !"".equals(courseEntity.getClassroom())){
                 text = text + "\n" + courseEntity.getClassroom();
             }
             if (count < 1){
                 count = count == -1 ? colorList.size() : colorList.size() / 2;
             }
-            int color;
+            Integer color = colorMap.get(text);
             //如果颜色映射包含text
-            if (colorMap.containsKey(text)){
-                color = colorMap.get(text);
-            } else {
+            if (color == null){
                 Random r = new Random();
                 int random = r.nextInt(count);
                 count--;

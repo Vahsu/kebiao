@@ -24,6 +24,7 @@ import com.vahsu.kebiao.DBUtil.CourseLNRTL;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class DisplayCourseActivity extends AppCompatActivity {
@@ -32,38 +33,33 @@ public class DisplayCourseActivity extends AppCompatActivity {
     List<CourseLNRTL> courseLNRTLList = new ArrayList<>();
     private CourseAdapter mAdapter;
     List<String> dates;
+    String firstDate;
     String lastDate;
     int totalWeek;
     private TextView[] top;
     private Spinner top_0;
 
-    private Calendar calendar;
-    private SharedPreferences preferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_displaycourse);
-        calendar = Calendar.getInstance();
+
         top_0 = (Spinner) findViewById(R.id.top_0);
-        preferences = getSharedPreferences("data", MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("data", MODE_PRIVATE);
         totalWeek = preferences.getInt("totalWeek", 0);
-        lastDate = preferences.getString("lastDate","0-0");
+        firstDate = preferences.getString("firstDate","0-0-0");
+        lastDate = preferences.getString("lastDate","0-0-0");
         String[] week = new String[totalWeek];
         for (int i = 0; i < week.length; i++) {
             week[i] = String.valueOf(i + 1) + "周";
         }
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.week_item, week);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, R.layout.week_item, week);
         spinnerAdapter.setDropDownViewResource(R.layout.week_item);
         top_0.setAdapter(spinnerAdapter);
         top_0.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (isFirst) {
-                    isFirst = false;
-                } else {
-                    new showCourseList(position + 1).execute();
-                }
+                    new GetCourseListTask().execute(position + 1);
             }
 
             @Override
@@ -128,46 +124,58 @@ public class DisplayCourseActivity extends AppCompatActivity {
         });
         myRecyclerView.setAdapter(mAdapter);
 
-        new showCourseList().execute();
+        new GetWeekTask().execute();
     }
 
-    private class showCourseList extends AsyncTask<String, Integer, String> {
-        private int week = -1;
+    private class GetWeekTask extends AsyncTask<Void, Void, Integer> {
 
-        public showCourseList(int week) {
-            this.week = week;
-        }
-
-        public showCourseList() {
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            int week;
+            String[] firstTemp = firstDate.split("-", 3);
+            int firstYear = Integer.parseInt(firstTemp[0]);
+            int firstMonth = Integer.parseInt(firstTemp[1]);
+            int firstDay = Integer.parseInt(firstTemp[2]);
+            String[] lastTemp = lastDate.split("-",3);
+            int lastYear = Integer.parseInt(lastTemp[0]);
+            int lastMonth = Integer.parseInt(lastTemp[1]);
+            int lastDay = Integer.parseInt(lastTemp[2]);
+            Calendar todayC = Calendar.getInstance();
+            Calendar firstC = new GregorianCalendar(firstYear, firstMonth - 1, firstDay);
+            Calendar lastC = new GregorianCalendar(lastYear, lastMonth - 1, lastDay);
+            if (todayC.before(firstC)){
+                week = 1;
+            } else if (todayC.after(lastC)){
+                week = totalWeek;
+            } else {
+                int month = todayC.get(Calendar.MONTH) + 1;
+                int day = todayC.get(Calendar.DAY_OF_MONTH);
+                String today = String.valueOf(month) + "-" + String.valueOf(day);
+                week = AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getWeekByDate(today);
+            }
+            return week;
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected void onPostExecute(Integer week) {
+            top_0.setSelection(week - 1, false);
+        }
+    }
+    private class GetCourseListTask extends AsyncTask<Integer, Void, Void> {
 
-            if (week == -1) {
-                int month = calendar.get(Calendar.MONTH) + 1;
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                String today = String.valueOf(month) + "-" + String.valueOf(day);
-                String[] lastTemp = lastDate.split("-",2);
-                int lastMonth = Integer.parseInt(lastTemp[0]);
-                int lastDay = Integer.parseInt(lastTemp[1]);
-                if ((month * 100 + day) > (lastMonth * 100 + lastDay)){
-                    week = totalWeek;
-                } else {
-                    week = AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getWeekByDate(today);
-                }
-            }
+        @Override
+        protected Void doInBackground(Integer... param) {
+            int week = param[0];
             dates = AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getDatesByWeek(week);
 
             //课表信息List
             courseLNRTLList.clear();
             courseLNRTLList.addAll(AppDatabase.getInstance(DisplayCourseActivity.this.getApplicationContext()).CourseDao().getCourseByWeek(week));
-            return "0";
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            top_0.setSelection(week - 1, false);
+        protected void onPostExecute(Void result) {
             String[] days = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
             for (int i = 0; i < 7; i++) {
                 String text = dates.get(i) + "\n" + days[i];
@@ -195,8 +203,8 @@ public class DisplayCourseActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(DisplayCourseActivity.this, LoginActivity.class);
+                                intent.putExtra("isSwitchUser", true);
                                 startActivity(intent);
-                                finish();
                             }
                         }).setNegativeButton("取消", null)
                         .create().show();

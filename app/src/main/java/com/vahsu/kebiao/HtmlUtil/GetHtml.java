@@ -1,12 +1,14 @@
 package com.vahsu.kebiao.HtmlUtil;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Date;
 
@@ -22,7 +24,7 @@ public class GetHtml {
         this.password = password;
         getCookies();
         if(loginIsSuccessful()){
-            downloadCourseHtml();
+            downloadScheduleHtml();
         }
     }
 
@@ -35,11 +37,7 @@ public class GetHtml {
 
     }
     public boolean loginIsSuccessful(){
-        if("0".equals(loginState())){
-            return true;
-        }else {
-            return false;
-        }
+        return "0".equals(loginState());
     }
 
     public String getCourseHtml(){
@@ -59,7 +57,7 @@ public class GetHtml {
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(4000);
-            OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream(), "utf-8");
+            OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8);
 
             Date d = new Date();
             String sign = String.valueOf(d.getTime());
@@ -82,14 +80,37 @@ public class GetHtml {
             }
 
         }catch (Exception e){
-
+            e.printStackTrace();
         }
     }
 
-    private void downloadCourseHtml(){
+    private String getScheduleAddress(){
+        String surl = "http://202.115.133.173:805/Default.aspx";
+        String scheduleAddress = null;
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(surl).openConnection();
+            if (cookieVal != null){
+                connection.setRequestProperty("Cookie", cookieVal);
+            }
+            connection.setConnectTimeout(4000);
+            connection.connect();
+            InputStream inputStream = connection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((line = bufferedReader.readLine()) != null){
+                stringBuilder.append(line).append("\n");
+            }
+            scheduleAddress = ParseDefaultHtml.getScheduleAddress(stringBuilder.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return scheduleAddress;
+    }
+    private void downloadScheduleHtml(){
         try {
 
-            String s = "http://202.115.133.173:805/Classroom/ProductionSchedule/StuProductionSchedule.aspx?termid=201802&stuID="+username;
+            String s = "http://202.115.133.173:805/" + getScheduleAddress();
             URL url = new URL(s);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             if (cookieVal != null) {
@@ -105,7 +126,7 @@ public class GetHtml {
                 courseHtml.append(line).append("\n");
             }
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
     private static String getMD5String(String str) {

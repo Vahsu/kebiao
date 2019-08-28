@@ -3,17 +3,17 @@
     <integer-array name="course_background_color">
         <item>0x7FFF7F7F</item>
         <item>0x7FFF7F00</item>
-        <!--<item>0xFFFFFF7F</item> -->
+        <item>0x7FFFFF7F</item> <!---->
         <item>0x7FFFFF00</item>
         <item>0x7F7FFF00</item>
-        <!--<item>0xFF7FFF7F</item> -->
-        <!--<item>0xFF00FF7F</item>-->
+        <item>0x7F7FFF7F</item> <!---->
+        <item>0x7F00FF7F</item> <!---->
         <item>0x7F7FFFFF</item>
-        <!--<item>0xFF00FFFF</item>-->
+        <item>0x7F00FFFF</item> <!---->
         <item>0x7F007FFF</item>
         <item>0x7F7F7FFF</item>
         <item>0x7F7F00FF</item>
-        <!--<item>0xFFFF00FF</item>-->
+        <item>0x7FFF00FF</item> <!---->
         <item>0x7FFF7FFF</item>
         <item>0x7FFF007F</item>
     </integer-array>

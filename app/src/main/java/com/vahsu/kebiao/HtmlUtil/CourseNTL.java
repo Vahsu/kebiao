@@ -1,21 +1,16 @@
 package com.vahsu.kebiao.HtmlUtil;
 
-public class CourseCNTL {
-    private String courseCode;
+public class CourseNTL {
     private String courseName;
     private String type;
     private String lecturer;
 
-    CourseCNTL(String courseCode, String courseName, String type, String lecturer){
-        this.courseCode = courseCode;
+    CourseNTL(String courseName, String type, String lecturer){
         this.courseName = courseName;
         this.type = type;
         this.lecturer = lecturer;
     }
 
-    public String getCourseCode() {
-        return courseCode;
-    }
 
     public String getCourseName() {
         return courseName;
