@@ -44,8 +44,8 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
         ViewHolder(View view, int parentWidth) {
             super(view);
             courseView = (TextView)view.findViewById(R.id.course);
-            courseView.setWidth(parentWidth/7);
-
+//            courseView.setWidth(parentWidth/7);
+            view.findViewById(R.id.courseP).getLayoutParams().width = parentWidth/7;
         }
     }
 
@@ -99,7 +99,9 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             }
 
             Drawable shape = holder.courseView.getContext().getDrawable(R.drawable.course_background);
-            shape.setColorFilter(color, PorterDuff.Mode.SRC);
+            if (shape != null) {
+                shape.setColorFilter(color, PorterDuff.Mode.SRC);
+            }
             holder.courseView.setText(text);
             holder.courseView.setBackground(shape);
             holder.courseView.setOnClickListener(new View.OnClickListener() {
